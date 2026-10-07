@@ -1,0 +1,59 @@
+name: 触发上架
+
+# 审核清单合并到 main 后立即通知平台仓库构建签名。令牌只需平台仓库的 Actions 读写权限，
+# 不能修改代码或读取密钥；未配置时平台仓库仍会在下次定时运行（最多 2 小时）时上架。
+on:
+  push:
+    branches: [main]
+    paths: [registry.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: store-publish
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    name: 通知平台仓库立即发布
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ secrets.TFSIGN_DISPATCH_TOKEN }}
+      PLATFORM_REPOSITORY: ${{ vars.PLATFORM_REPOSITORY || 'longfie/tfsign' }}
+    steps:
+      - name: 触发发布工作流
+        id: dispatch
+        run: |
+          set -euo pipefail
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::未配置 TFSIGN_DISPATCH_TOKEN，平台仓库会在下次定时运行（最多 2 小时）时上架"
+            echo "triggered=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          since="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run plugin-store.yml -R "$PLATFORM_REPOSITORY" --ref dev
+          echo "triggered=true" >> "$GITHUB_OUTPUT"
+          echo "since=${since}" >> "$GITHUB_OUTPUT"
+
+      - name: 等待上架完成
+        if: steps.dispatch.outputs.triggered == 'true'
+        env:
+          SINCE: ${{ steps.dispatch.outputs.since }}
+        run: |
+          set -euo pipefail
+          run_id=""
+          for _ in $(seq 1 20); do
+            run_id="$(gh run list -R "$PLATFORM_REPOSITORY" --workflow plugin-store.yml --event workflow_dispatch --limit 5 \
+              --json databaseId,createdAt --jq "map(select(.createdAt >= \"${SINCE}\")) | last | .databaseId // empty")"
+            [ -n "$run_id" ] && break
+            sleep 3
+          done
+          if [ -z "$run_id" ]; then
+            echo "::warning::已触发发布，但未找到对应的运行记录，请到平台仓库 Actions 查看"
+            exit 0
+          fi
+          echo "平台仓库发布运行：${run_id}" >> "$GITHUB_STEP_SUMMARY"
+          gh run watch "$run_id" -R "$PLATFORM_REPOSITORY" --exit-status --interval 10 > /dev/null
+          echo "上架完成" >> "$GITHUB_STEP_SUMMARY"

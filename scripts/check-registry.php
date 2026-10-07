@@ -327,6 +327,6 @@ foreach ($sections as $section) {
     $report[] = $section;
 }
 $report[] = '';
-$report[] = '审核要点见 [上架规则](https://github.com/' . (getenv('GITHUB_REPOSITORY') ?: 'longfie/tfsign-plugins') . '/blob/main/POLICY.md)。合并后平台仓库的发布工作流会在 2 小时内构建、签名并上架；维护者也可以手动触发。';
+$report[] = '审核要点见 [上架规则](https://github.com/' . (getenv('GITHUB_REPOSITORY') ?: 'longfie/tfsign-plugins') . '/blob/main/POLICY.md)。合并后会立即触发平台仓库构建、签名并上架，通常几分钟内完成。';
 file_put_contents((string)($options['report'] ?? 'php://stdout'), implode("\n", $report) . "\n");
 exit($errors === [] ? 0 : 1);
