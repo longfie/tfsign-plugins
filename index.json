@@ -1,4 +1,16 @@
 {
     "schema_version": 1,
-    "plugins": []
+    "plugins": [
+        {
+            "code": "example",
+            "name": "示例插件",
+            "versions": [
+                {
+                    "version": "1.0.0",
+                    "url": "https://longfie.github.io/tfsign-plugins/packages/example-1.0.0.zip",
+                    "sha256": "bafe0c12a22feaa31a8824a486157d8c0836cbad5185b5085f4fc08f84535bf7"
+                }
+            ]
+        }
+    ]
 }
