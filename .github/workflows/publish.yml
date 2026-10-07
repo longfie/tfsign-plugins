@@ -33,7 +33,16 @@ jobs:
             exit 0
           fi
           since="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run plugin-store.yml -R "$PLATFORM_REPOSITORY" --ref dev
+          if ! gh workflow run plugin-store.yml -R "$PLATFORM_REPOSITORY" --ref dev; then
+            if ! gh api "repos/${PLATFORM_REPOSITORY}" --silent 2>/dev/null; then
+              echo "::error::TFSIGN_DISPATCH_TOKEN 无法访问 ${PLATFORM_REPOSITORY}：请在令牌的 Repository access 中选择该仓库"
+            elif ! gh api "repos/${PLATFORM_REPOSITORY}/actions/workflows" --silent 2>/dev/null; then
+              echo "::error::TFSIGN_DISPATCH_TOKEN 没有 Actions 权限：请把令牌的 Actions 设为 Read and write"
+            else
+              echo "::error::TFSIGN_DISPATCH_TOKEN 只有 Actions 只读权限：请把令牌的 Actions 设为 Read and write"
+            fi
+            exit 1
+          fi
           echo "triggered=true" >> "$GITHUB_OUTPUT"
           echo "since=${since}" >> "$GITHUB_OUTPUT"
 
