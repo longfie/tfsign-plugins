@@ -23,7 +23,8 @@
                 {"version": "1.0.0", "commit": "fa35128b1d1ef194782947a188766ec6089a691f"},
                 {"version": "1.0.1", "commit": "bc100e2de56a75606e6b005938ed4e892c5ed8ba"},
                 {"version": "1.1.0", "commit": "ef152d1dbd78a86f06eeb6e24d0a16e089556ea5"},
-                {"version": "1.1.1", "commit": "831204eef6ff74d4dea3c87b867db3845aa2121e"}
+                {"version": "1.1.1", "commit": "831204eef6ff74d4dea3c87b867db3845aa2121e"},
+                {"version": "1.1.2", "commit": "2560e8eafb76b4f189c0d025c9f724c9c31e2e1b"}
             ]
         }
     ]
