@@ -10,5 +10,6 @@
 - [ ] 我已阅读并同意[上架规则与开发者协议](https://github.com/longfie/tfsign-plugins/blob/main/POLICY.md)
 - [ ] 源码仓库公开，登记的提交 SHA 就是要发布的内容
 - [ ] `plugin.json` 的 `network_hosts` 已列出插件会访问的全部域名
+- [ ] 网络请求与等待全部使用平台运行时接口，源码（含依赖）不直接调用 curl、socket 或 sleep
 - [ ] 账号凭据只发送给声明的第三方平台域名，不上传给开发者或其他第三方
 - [ ] 插件涉及的风险已在说明或设置中如实写明，高风险功能默认关闭

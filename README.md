@@ -14,6 +14,8 @@
 
    引入第三方 Composer 依赖时必须提交 `composer.lock`。商店构建时会以 `--no-scripts --no-plugins` 安装依赖，不会执行任何 Composer 脚本。
 
+   网络请求、并发、等待和心跳任务统一使用平台运行时（实现 `RuntimeAwarePluginInterface` 并 `use UsesPluginRuntime`，见平台文档“平台运行时”一节）。构建时会扫描插件源码和依赖，直接调用 `curl_*`、`socket_*`、`fsockopen`、`stream_socket_*`、`sleep`、`usleep` 的版本无法发布。
+
 2. Fork 本仓库，在 `registry.json` 的 `plugins` 中追加一条：
 
    ```json
