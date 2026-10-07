@@ -1,0 +1,76 @@
+name: 审核检查
+
+# 使用 pull_request_target 从 main 分支运行检查脚本，PR 内容只作为数据读取，
+# 不检出、不执行 PR 或插件仓库中的任何代码，因此可以安全地为外部贡献者的 PR 发表检查报告。
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: store-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: 校验审核清单
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: 检出 main 分支的检查脚本
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: 配置 PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, phar
+          coverage: none
+
+      - name: 读取 PR 数据
+        run: |
+          set -euo pipefail
+          cp registry.json "$RUNNER_TEMP/base-registry.json"
+          git fetch --no-tags --depth=1 origin "+refs/pull/${PR_NUMBER}/head:refs/remotes/pr/head"
+          git show "${HEAD_SHA}:registry.json" > "$RUNNER_TEMP/head-registry.json" || echo '{}' > "$RUNNER_TEMP/head-registry.json"
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate --jq '.[].filename' > "$RUNNER_TEMP/changed-files.txt"
+
+      - name: 检查
+        id: check
+        continue-on-error: true
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          php scripts/check-registry.php \
+            --base="$RUNNER_TEMP/base-registry.json" \
+            --head="$RUNNER_TEMP/head-registry.json" \
+            --changed="$RUNNER_TEMP/changed-files.txt" \
+            --author="$PR_AUTHOR" \
+            --owner="$REPO_OWNER" \
+            --report="$RUNNER_TEMP/report.md"
+
+      - name: 发表检查报告
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f "$RUNNER_TEMP/report.md" || echo "检查脚本未生成报告，请查看工作流日志。" > "$RUNNER_TEMP/report.md"
+          cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+          gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/report.md" --edit-last \
+            || gh pr comment "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/report.md"
+
+      - name: 检查结果
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "自动检查未通过，详见 PR 中的检查报告" >&2
+          exit 1

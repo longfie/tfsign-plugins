@@ -1,0 +1,30 @@
+{
+    "schema_version": 1,
+    "plugins": [
+        {
+            "code": "example",
+            "repository": "longfie/tfsign-plugin-example",
+            "path": ".",
+            "maintainers": ["longfie"],
+            "tier": "official",
+            "risk_labels": [],
+            "releases": [
+                {"version": "1.0.0", "commit": "a9f0569769aa62af167bec5497c1433c7c8be500"}
+            ]
+        },
+        {
+            "code": "qqmusic",
+            "repository": "longfie/tfsign-plugin-qqmusic",
+            "path": ".",
+            "maintainers": ["longfie"],
+            "tier": "official",
+            "risk_labels": ["credentials", "account_risk", "unofficial_api"],
+            "releases": [
+                {"version": "1.0.0", "commit": "fa35128b1d1ef194782947a188766ec6089a691f"},
+                {"version": "1.0.1", "commit": "bc100e2de56a75606e6b005938ed4e892c5ed8ba"},
+                {"version": "1.1.0", "commit": "ef152d1dbd78a86f06eeb6e24d0a16e089556ea5"},
+                {"version": "1.1.1", "commit": "831204eef6ff74d4dea3c87b867db3845aa2121e"}
+            ]
+        }
+    ]
+}
