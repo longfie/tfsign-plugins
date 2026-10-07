@@ -21,7 +21,33 @@
             "name": "QQ音乐",
             "description": "QQ音乐会员成长值每日任务：签到、头像挂件、主题装扮、逛听书与收听节目",
             "logo_url": "https://raw.githubusercontent.com/longfie/tfsign-plugin-qqmusic/main/logo.jpg",
+            "network_hosts": [
+                "u.y.qq.com",
+                "u6.y.qq.com",
+                "stat.y.qq.com",
+                "ssl.ptlogin2.qq.com",
+                "graph.qq.com",
+                "*.qq.com"
+            ],
+            "tier": "official",
+            "risk_labels": [
+                "credentials",
+                "account_risk",
+                "unofficial_api"
+            ],
             "versions": [
+                {
+                    "version": "1.1.2",
+                    "url": "https://longfie.github.io/tfsign-plugins/packages/qqmusic-1.1.2.zip",
+                    "sha256": "403b15596591c181cab33b166e663a03d959f2917dce0783c64307d9e5a5073f",
+                    "changelog": "声明插件会访问的 QQ 音乐与 QQ 登录域名，供插件商店审核和公示。",
+                    "source": {
+                        "repository": "longfie/tfsign-plugin-qqmusic",
+                        "commit": "2560e8eafb76b4f189c0d025c9f724c9c31e2e1b"
+                    },
+                    "registry_commit": "00fbe5230d18be141dbbfd692d7f1e36a3935202",
+                    "published_at": "2026-10-07T12:33:12Z"
+                },
                 {
                     "version": "1.1.1",
                     "url": "https://longfie.github.io/tfsign-plugins/packages/qqmusic-1.1.1.zip",
@@ -44,12 +70,6 @@
                     "url": "https://longfie.github.io/tfsign-plugins/packages/qqmusic-1.0.0.zip",
                     "sha256": "235827501737513ef0a06dd9b7b9d484cd7327dab0e7ffd4307ce7b7f84c07a5"
                 }
-            ],
-            "tier": "official",
-            "risk_labels": [
-                "credentials",
-                "account_risk",
-                "unofficial_api"
             ]
         }
     ]
