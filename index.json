@@ -12,7 +12,9 @@
                     "url": "https://longfie.github.io/tfsign-plugins/packages/example-1.0.0.zip",
                     "sha256": "bafe0c12a22feaa31a8824a486157d8c0836cbad5185b5085f4fc08f84535bf7"
                 }
-            ]
+            ],
+            "tier": "official",
+            "risk_labels": []
         },
         {
             "code": "qqmusic",
@@ -42,6 +44,12 @@
                     "url": "https://longfie.github.io/tfsign-plugins/packages/qqmusic-1.0.0.zip",
                     "sha256": "235827501737513ef0a06dd9b7b9d484cd7327dab0e7ffd4307ce7b7f84c07a5"
                 }
+            ],
+            "tier": "official",
+            "risk_labels": [
+                "credentials",
+                "account_risk",
+                "unofficial_api"
             ]
         }
     ]
