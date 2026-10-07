@@ -18,8 +18,13 @@
             "code": "qqmusic",
             "name": "QQ音乐",
             "description": "QQ音乐会员成长值每日任务：签到、头像挂件、主题装扮、逛听书与收听节目",
-            "logo_url": "",
+            "logo_url": "https://raw.githubusercontent.com/longfie/tfsign-plugin-qqmusic/main/logo.jpg",
             "versions": [
+                {
+                    "version": "1.0.1",
+                    "url": "https://longfie.github.io/tfsign-plugins/packages/qqmusic-1.0.1.zip",
+                    "sha256": "46552342975ed14354d63025c54e214c8df6f7249eaed80121d2100ae1595706"
+                },
                 {
                     "version": "1.0.0",
                     "url": "https://longfie.github.io/tfsign-plugins/packages/qqmusic-1.0.0.zip",
